@@ -1,0 +1,21 @@
+name: Update star count in README
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: k2bd/advent-readme-stars@v1
+        with:
+          userId: ${{ vars.AOC_USER_ID }}
+          sessionCookie: ${{ secrets.AOC_SESSION }}
+      - uses: stefanzweifel/git-auto-commit-action@v5 # use v5
+        with:
+          commit_message: "chore(readme): update star count"

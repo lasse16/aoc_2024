@@ -16,6 +16,7 @@ jobs:
         with:
           userId: ${{ vars.AOC_USER_ID }}
           sessionCookie: ${{ secrets.AOC_SESSION }}
+          year: 2024
       - uses: stefanzweifel/git-auto-commit-action@v5 # use v5
         with:
           commit_message: "chore(readme): update star count"

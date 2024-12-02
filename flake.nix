@@ -22,10 +22,9 @@
           packages = with pkgs.${system}; [
             (mkPoetryEnv { projectDir = self; })
             poetry
+	    ruff
 	    python312Packages.python-lsp-server
 	    python312Packages.rope
-	    python312Packages.yapf
-	    python312Packages.pyflakes
           ];
         };
       });

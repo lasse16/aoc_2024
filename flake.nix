@@ -26,6 +26,7 @@
 	    python312Packages.python-lsp-server
 	    python312Packages.rope
           ];
+	  name  = "aoc";
         };
       });
     };

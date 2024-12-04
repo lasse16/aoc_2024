@@ -16,7 +16,7 @@ def main():
     twoDimensionalGrid, x_max, y_max = parse("input.txt")
     # twoDimensionalGrid, x_max, y_max = parse("test-input.txt")
     print(f"Solution PART1: {part1(twoDimensionalGrid,x_max,y_max)}")
-    # print(f"Solution PART2: {part2(twoDimensionalGrid,x_max,y_max)}")
+    print(f"Solution PART2: {part2(twoDimensionalGrid,x_max,y_max)}")
 
 
 def parse(file):
@@ -51,8 +51,7 @@ def valid_words(candidate, grid):
                         grid[__component_wise_multiplication(candidate, direction, 3)]
                         == "S"
                     ):
-                        print((candidate, direction))
-                        count +=1
+                        count += 1
     return count
 
 
@@ -63,8 +62,33 @@ def __component_wise_multiplication(tuple1, tuple2, multiplicator):
     return tuple(result)
 
 
-def part2(string):
-    pass
+def part2(grid, x_max, y_max):
+    total_count = 0
+    for x in range(x_max):
+        for y in range(y_max):
+            if grid[(x, y)] == "A":
+                candidate = (x, y)
+                total_count += int(valid_xmas_cross(candidate, grid))
+    return total_count
+
+
+def valid_xmas_cross(candidate, grid):
+    return check_if_direction_writes_mas_or_sam(
+        candidate, (-1, -1), grid
+    ) and check_if_direction_writes_mas_or_sam(candidate, (1, -1), grid)
+
+
+def check_if_direction_writes_mas_or_sam(candidate, direction, grid):
+    c_in_direction = grid[__component_wise_multiplication(candidate, direction, 1)]
+    flipped_direction = __component_wise_multiplication((0, 0), direction, -1)
+    c_in_flipped_direction = grid[
+        __component_wise_multiplication(candidate, flipped_direction, 1)
+    ]
+    return (
+        c_in_direction in ("M", "S")
+        and c_in_flipped_direction in ("M", "S")
+        and c_in_direction != c_in_flipped_direction
+    )
 
 
 if __name__ == "__main__":

@@ -25,6 +25,7 @@
 	    ruff
 	    python312Packages.python-lsp-server
 	    python312Packages.rope
+	    python312Packages.debugpy
           ];
 	  name  = "aoc";
         };

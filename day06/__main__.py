@@ -9,15 +9,15 @@ directions = [
 
 
 def main():
-    grid, guard_start = parse("input.txt")
+    grid, guard_start, max_x, max_y = parse("input.txt")
     # rules, updates = parse("test-input.txt")
 
-    print(f"Solution PART1: {part1(grid, guard_start)}")
+    print(f"Solution PART1: {part1(grid, guard_start,max_x,max_y)}")
     # print(f"Solution PART2: {part2(grid, guard_start)}")
 
 
 def parse(file):
-    grid = dict()
+    grid = defaultdict(lambda: False)
     guard_start = -1
     with open(file, "r") as file:
         for x, line in enumerate(file.readlines()):
@@ -29,30 +29,23 @@ def parse(file):
                     grid[(x, y)] = False
                 if field == ".":
                     grid[(x, y)] = False
-    return grid, guard_start
+    return grid, guard_start, x, y
 
 
-def part1(grid, guard_start):
+def part1(grid, guard_start, max_x, max_y):
     visited_nodes = set()
     current_direction_index = 0
     current_position = guard_start
-    in_grid = True
-    while in_grid:
-        print("still_running")
+    while current_position[0] in range(max_x) and current_position[1] in range(max_y):
         visited_nodes.add(current_position)
         potential_position = __tuple_add(
             current_position, directions[current_direction_index]
         )
-        # Not proud on using exceptions to do business logic
-        try:
-            if grid[potential_position]:
-                current_direction_index += 1
-                current_direction_index %= len(directions)
-            else:
-                current_position = potential_position
-        except KeyError:
-            in_grid = False
-
+        if grid[potential_position]:
+            current_direction_index += 1
+            current_direction_index %= len(directions)
+        else:
+            current_position = potential_position
     return len(visited_nodes)
 
 

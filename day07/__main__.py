@@ -28,20 +28,34 @@ def part1(args):
     return total_sum_of_valid
 
 
-def is_valid(equation):
+def is_valid(equation, with_cat=False):
     result, values = equation
+    operators = [add, mul]
+    if with_cat:
+        operators.append(cat)
 
     # Generate a list of all possible values by applying all operators to all possible values at each step
     # This essentially is dynamic programming
     possible_values = [values[0]]
     for other_value in values[1:]:
-        possible_values = [op(value, other_value) for value in possible_values for op in (add, mul)]
+        possible_values = [
+            op(value, other_value) for value in possible_values for op in operators
+        ]
 
     return result in possible_values
 
 
+# Runs in less than 10s *shrug*
 def part2(args):
-    pass
+    total_sum_of_valid = 0
+    for equation in args:
+        if is_valid(equation, True):
+            total_sum_of_valid += equation[0]
+    return total_sum_of_valid
+
+
+def cat(x, y):
+    return int(str(x) + str(y))
 
 
 if __name__ == "__main__":

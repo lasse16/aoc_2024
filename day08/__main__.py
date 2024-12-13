@@ -7,7 +7,7 @@ def main():
     # args = parse("test-input2.txt")
 
     print(f"Solution PART1: {part1(args)}")
-    # print(f"Solution PART2: {part2(args)}")
+    print(f"Solution PART2: {part2(args)}")
 
 
 def parse(file):
@@ -25,7 +25,7 @@ def part1(args):
     unique_antinodes = set()
     for antennae in antennae_with_frequency.values():
         for idx, antenna in enumerate(antennae):
-            for other_antenna in antennae[idx+1:]:
+            for other_antenna in antennae[idx + 1 :]:
                 # Implicit ordering from parsing
                 # antenna 0 is going to be lower x than antenna 1
                 x_diff = antenna[0] - other_antenna[0]
@@ -46,7 +46,27 @@ def __point_in_grid(point, max_x, max_y):
 
 
 def part2(args):
-    print(args)
+    antennae_with_frequency, max_x, max_y = args
+    unique_antinodes = set()
+    for antennae in antennae_with_frequency.values():
+        for idx, antenna in enumerate(antennae):
+            for other_antenna in antennae[idx + 1 :]:
+                # Implicit ordering from parsing
+                # antenna 0 is going to be lower x than antenna 1
+                x_diff = antenna[0] - other_antenna[0]
+                y_diff = antenna[1] - other_antenna[1]
+
+                curr_point = antenna
+                while __point_in_grid(curr_point, max_x, max_y):
+                    unique_antinodes.add(curr_point)
+                    curr_point = (curr_point[0] + x_diff, curr_point[1] + y_diff)
+
+                curr_point = other_antenna
+                while __point_in_grid(curr_point, max_x, max_y):
+                    unique_antinodes.add(curr_point)
+                    curr_point = (curr_point[0] - x_diff, curr_point[1] - y_diff)
+
+    return len(unique_antinodes)
 
 
 if __name__ == "__main__":

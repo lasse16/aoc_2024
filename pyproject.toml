@@ -1,4 +1,4 @@
-[tool.poetry]
+[project]
 name = "AoC2024"
 version = "0.1.0"
 description = "My solutions for Advent of Code 2024"
@@ -8,10 +8,3 @@ readme = "README.md"
 packages = [
   { include = "day*" }
 ]
-
-[tool.poetry.dependencies]
-python = "^3.10"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"

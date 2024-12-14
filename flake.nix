@@ -1,34 +1,49 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-  inputs.poetry2nix.url = "github:nix-community/poetry2nix";
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-  outputs = { self, nixpkgs, poetry2nix }:
-    let
-      supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
-      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-      pkgs = forAllSystems (system: nixpkgs.legacyPackages.${system});
-    in
-    {
-      packages = forAllSystems (system: let
-        inherit (poetry2nix.lib.mkPoetry2Nix { pkgs = pkgs.${system}; }) mkPoetryApplication;
-      in {
-        default = mkPoetryApplication { projectDir = self; };
-      });
-
-      devShells = forAllSystems (system: let
-        inherit (poetry2nix.lib.mkPoetry2Nix { pkgs = pkgs.${system}; }) mkPoetryEnv;
-      in {
-        default = pkgs.${system}.mkShellNoCC {
-          packages = with pkgs.${system}; [
-            (mkPoetryEnv { projectDir = self; })
-            poetry
-	    ruff
-	    python312Packages.python-lsp-server
-	    python312Packages.rope
-	    python312Packages.debugpy
-          ];
-	  name  = "aoc";
-        };
-      });
+    pyproject-nix = {
+      url = "github:pyproject-nix/pyproject.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    uv2nix = {
+      url = "github:pyproject-nix/uv2nix";
+      inputs.pyproject-nix.follows = "pyproject-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    pyproject-build-systems = {
+      url = "github:pyproject-nix/build-system-pkgs";
+      inputs.pyproject-nix.follows = "pyproject-nix";
+      inputs.uv2nix.follows = "uv2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+
+  outputs = {
+    self,
+    nixpkgs,
+    uv2nix,
+    pyproject-nix,
+    pyproject-build-systems,
+  }: let
+    supportedSystems = ["x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin"];
+    forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+  in {
+    devShells = forAllSystems (system: let
+      pkgs = forAllSystems (system: nixpkgs.legacyPackages.${system});
+    in {
+      default = pkgs.${system}.mkShellNoCC {
+        packages = with pkgs.${system}; [
+          uv
+          ruff
+          python312Packages.python-lsp-server
+          python312Packages.rope
+          python312Packages.debugpy
+        ];
+        name = "aoc";
+      };
+    });
+  };
 }

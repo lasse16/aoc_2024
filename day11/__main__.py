@@ -1,4 +1,5 @@
 from math import log10, floor
+from functools import cache
 
 
 def main():
@@ -28,15 +29,19 @@ def part1(args):
 def simulate_step(stones):
     new_stones = []
     for stone in stones:
-        if stone == 0:
-            new_stones.append(1)
-        elif digits_in_integer(stone) % 2 == 0:
-            first_half, second_half = split_integer(stone)
-            new_stones.append(first_half)
-            new_stones.append(second_half)
-        else:
-            new_stones.append(stone * 2024)
+        updated = simulate_stone(stone)
+        new_stones += updated
     return new_stones
+
+
+def simulate_stone(stone):
+    if stone == 0:
+        return [1]
+    elif digits_in_integer(stone) % 2 == 0:
+        first_half, second_half = split_integer(stone)
+        return [first_half, second_half]
+    else:
+        return [stone * 2024]
 
 
 def digits_in_integer(integer):
@@ -49,8 +54,36 @@ def split_integer(integer, splitting_point=-1):
     return integer // 10**splitting_point, integer % 10**splitting_point
 
 
+@cache
+def simulate_stone_for_count(stone, count):
+    if count == 0:
+        return 1
+
+    count -= 1
+    if stone == 0:
+        result = simulate_stone_for_count(1, count)
+    elif digits_in_integer(stone) % 2 == 0:
+        left, right = split_integer(stone)
+        result = simulate_stone_for_count(left, count) + simulate_stone_for_count(
+            right, count
+        )
+    else:
+        result = simulate_stone_for_count(stone * 2024, count)
+
+    return result
+
+
 def part2(args):
-    print(args)
+    stones = args
+    step_count = 75
+
+    total_stone_count = 0
+
+    # All stones are independent from each other as order is preserved
+    for stone in stones:
+        total_stone_count += simulate_stone_for_count(stone, step_count)
+
+    return total_stone_count
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@ website:
 	$BROWSER "https://adventofcode.com/2024/"
 
 get-input day:
-	curl - "session=$SESSION_COOKIE" https://adventofcode.com/2024/day/{{ day }}/input -o day{{ day }}/input.txt
+	curl -b "session=$SESSION_COOKIE" https://adventofcode.com/2024/day/{{ day }}/input -o day{{ day }}/input.txt
 
 run day:
 	python day{{ day }}/__main__.py

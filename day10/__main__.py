@@ -32,14 +32,10 @@ def part1(args):
         for y in range(max_y):
             start = (x, y)
             if grid[start] == 0:
-                trailhead_score = get_valid_trail_count(grid, start)
+                trailhead_score = len(set(get_trail_ends(grid, start)))
                 print(f"trail-head: {start} with score: {trailhead_score}")
                 sum_of_valid_trails += trailhead_score
     return sum_of_valid_trails
-
-
-def get_valid_trail_count(grid, start):
-    return len(set(get_trail_ends(grid, start)))
 
 
 def get_trail_ends(grid, start, current_num=0):
@@ -58,7 +54,16 @@ def get_trail_ends(grid, start, current_num=0):
 
 
 def part2(args):
-    print(args)
+    grid, max_x, max_y = args
+    sum_of_valid_trails = 0
+    for x in range(max_x):
+        for y in range(max_y):
+            start = (x, y)
+            if grid[start] == 0:
+                trailhead_rating = len(get_trail_ends(grid, start))
+                print(f"trail-head: {start} with rating: {trailhead_rating}")
+                sum_of_valid_trails += trailhead_rating
+    return sum_of_valid_trails
 
 
 def __comp_add(tuple1, tuple2):

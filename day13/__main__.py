@@ -6,7 +6,7 @@ def main():
     # args = parse("test-input.txt")
 
     print(f"Solution PART1: {part1(args)}")
-    # print(f"Solution PART2: {part2(args)}")
+    print(f"Solution PART2: {part2(args)}")
 
 
 def parse(file):
@@ -38,8 +38,25 @@ def part1(args):
     return total_cost
 
 
+# not 0
 def part2(args):
-    print(args)
+    cost_a_button = 3
+    cost_b_button = 1
+    max_button_presses = 100
+    machines = []
+    for machine in args:
+        ax, bx, ay, by, px, py = machine
+        px += 10000000000000
+        py += 10000000000000
+        machines.append((ax, bx, ay, by, px, py))
+    solutions = solve_machines(machines)
+
+    total_cost = 0
+    for solution in solutions:
+        a, b = solution
+        if a in range(max_button_presses) and b in range(max_button_presses):
+            total_cost += a * cost_a_button + b * cost_b_button
+    return total_cost
 
 
 def solve_machines(machines):
@@ -56,8 +73,8 @@ def solve_machine(Ax, Bx, Ay, By, x, y):
     det = Ax * By - Ay * Bx
     if det == 0:
         return None
-    a = (x * By - Bx * y) / det
-    b = (y * Ax - Ay * x) / det
+    a = (x * By - Bx * y) // det
+    b = (y * Ax - Ay * x) // det
 
     return a, b
 
